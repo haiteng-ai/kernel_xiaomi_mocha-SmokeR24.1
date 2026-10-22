@@ -738,7 +738,7 @@ static void __init tegra_ramrepair_init(void)
 
 static void __init tegra_init_power(void)
 {
-	int partition_id;
+	int partition_id __maybe_unused;
 #ifdef CONFIG_TEGRA_XUSB_PLATFORM
 	int partition_id_xusba, partition_id_xusbb, partition_id_xusbc;
 #endif
