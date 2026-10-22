@@ -4163,6 +4163,9 @@ static int tegra_sdhci_resume(struct sdhci_host *sdhci)
 	int err;
 	unsigned int cd_irq;
 
+	pr_err("MMCDBG: tegra rtpm resume enter %s\n",
+		mmc_hostname(sdhci->mmc));
+
 	pdev = to_platform_device(mmc_dev(sdhci->mmc));
 	plat = pdev->dev.platform_data;
 
@@ -4190,6 +4193,8 @@ static int tegra_sdhci_resume(struct sdhci_host *sdhci)
 		if (err) {
 			dev_err(mmc_dev(sdhci->mmc),
 				"Regulators enable in resume failed %d\n", err);
+			pr_err("MMCDBG: tegra rtpm resume exit %s ret=%d\n",
+				mmc_hostname(sdhci->mmc), err);
 			return err;
 		}
 		if (tegra_host->vdd_io_reg) {
@@ -4212,6 +4217,8 @@ static int tegra_sdhci_resume(struct sdhci_host *sdhci)
 	}
 
 	sdhci->detect_resume = 0;
+	pr_err("MMCDBG: tegra rtpm resume exit %s ret=0\n",
+		mmc_hostname(sdhci->mmc));
 	return 0;
 }
 
@@ -5450,6 +5457,8 @@ static struct tegra_sdhci_platform_data *sdhci_tegra_dt_parse_pdata(
 					"cd_wakeup_incapable");
 
 	plat->mmc_data.built_in = of_property_read_bool(np, "built-in");
+	pr_err("MMCDBG: sdhci-tegra %s node %s built-in=%d\n",
+		pdev->name, np->full_name, plat->mmc_data.built_in);
 	plat->update_pinctrl_settings = of_property_read_bool(np,
 			"nvidia,update-pinctrl-settings");
 	plat->dll_calib_needed = of_property_read_bool(np,

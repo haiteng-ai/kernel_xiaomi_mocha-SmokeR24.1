@@ -62,6 +62,9 @@ int mmc_send_io_op_cond(struct mmc_host *host, u32 ocr, u32 *rocr)
 	if (rocr)
 		*rocr = cmd.resp[mmc_host_is_spi(host) ? 1 : 0];
 
+	pr_err("MMCDBG: %s io_op_cond ocr=0x%x err=%d resp0=0x%x\n",
+		mmc_hostname(host), ocr, err, cmd.resp[0]);
+
 	return err;
 }
 
