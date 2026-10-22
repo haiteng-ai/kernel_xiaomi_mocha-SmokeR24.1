@@ -3015,6 +3015,8 @@ EXPORT_SYMBOL(mmc_hw_reset_check);
 
 static int mmc_rescan_try_freq(struct mmc_host *host, unsigned freq)
 {
+	int err;
+
 	host->f_init = freq;
 
 #ifdef CONFIG_MMC_DEBUG
@@ -3040,7 +3042,10 @@ static int mmc_rescan_try_freq(struct mmc_host *host, unsigned freq)
 	mmc_send_if_cond(host, host->ocr_avail);
 
 	/* Order's important: probe SDIO, then SD, then MMC */
-	if (!mmc_attach_sdio(host)) {
+	err = mmc_attach_sdio(host);
+	pr_err("MMCDBG: %s try_freq %u: attach_sdio=%d\n",
+		mmc_hostname(host), host->f_init, err);
+	if (!err) {
 		return 0;
 	} else {
 		/* error in attach sdio disables clock */
@@ -3048,9 +3053,15 @@ static int mmc_rescan_try_freq(struct mmc_host *host, unsigned freq)
 		mmc_power_up(host);
 	}
 
-	if (!mmc_attach_sd(host))
+	err = mmc_attach_sd(host);
+	pr_err("MMCDBG: %s try_freq %u: attach_sd=%d\n",
+		mmc_hostname(host), host->f_init, err);
+	if (!err)
 		return 0;
-	if (!mmc_attach_mmc(host))
+	err = mmc_attach_mmc(host);
+	pr_err("MMCDBG: %s try_freq %u: attach_mmc=%d\n",
+		mmc_hostname(host), host->f_init, err);
+	if (!err)
 		return 0;
 
 	mmc_power_off(host);
@@ -3131,6 +3142,9 @@ void mmc_rescan(struct work_struct *work)
 		container_of(work, struct mmc_host, detect.work);
 	int i;
 	bool extend_wakelock = false;
+
+	pr_err("MMCDBG: rescan enter %s rescan_disable=%d\n",
+		mmc_hostname(host), host->rescan_disable);
 
 	if (host->rescan_disable)
 		return;

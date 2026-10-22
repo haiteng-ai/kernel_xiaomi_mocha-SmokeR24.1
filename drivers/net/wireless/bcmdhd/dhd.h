@@ -126,7 +126,7 @@ enum dhd_op_flags {
 #define POWERUP_MAX_RETRY	3 /* how many times we retry to power up the chip */
 #endif
 #ifndef POWERUP_WAIT_MS
-#define POWERUP_WAIT_MS		2000 /* ms: time out in waiting wifi to come up */
+#define POWERUP_WAIT_MS		4000 /* ms: time out in waiting wifi to come up */
 #endif
 
 enum dhd_bus_wake_state {
@@ -929,7 +929,7 @@ extern uint dhd_force_tx_queueing;
 #define WIFI_TURNOFF_DELAY		DEFAULT_WIFI_TURNOFF_DELAY
 #endif /* WIFI_TURNOFF_DELAY */
 
-#define DEFAULT_WIFI_TURNON_DELAY		200
+#define DEFAULT_WIFI_TURNON_DELAY		1000
 #ifndef WIFI_TURNON_DELAY
 #define WIFI_TURNON_DELAY		DEFAULT_WIFI_TURNON_DELAY
 #endif /* WIFI_TURNON_DELAY */

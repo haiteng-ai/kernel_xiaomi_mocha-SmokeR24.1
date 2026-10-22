@@ -212,16 +212,24 @@ int wifi_dts_set_carddetect(wifi_adapter_info_t *adapter, bool device_present)
 	struct platform_device *pdev = NULL;
 	struct sdhci_host *host =  NULL;
 
-	if (adapter->sdhci_host == NULL)
+	if (adapter->sdhci_host == NULL) {
+		pr_err("MMCDBG: carddetect fail: adapter->sdhci_host is NULL\n");
 		return -EINVAL;
+	}
 
 	pdev = of_find_device_by_node(adapter->sdhci_host);
-	if (pdev == NULL)
+	if (pdev == NULL) {
+		pr_err("MMCDBG: carddetect fail: of_find_device_by_node returned NULL\n");
 		return -EINVAL;
+	}
 
 	host = platform_get_drvdata(pdev);
-	if (host == NULL)
+	if (host == NULL) {
+		pr_err("MMCDBG: carddetect fail: platform_get_drvdata returned NULL\n");
 		return -EINVAL;
+	}
+
+	pr_err("MMCDBG: carddetect via %s\n", mmc_hostname(host->mmc));
 
 	DHD_INFO(("%s Calling %s card detect\n", __func__, mmc_hostname(host->mmc)));
 	if (device_present == 1) {
